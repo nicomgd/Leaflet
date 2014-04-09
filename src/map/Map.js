@@ -319,11 +319,17 @@ L.Map = L.Evented.extend({
 		return this._size.clone();
 	},
 	
-	_transformPoint: function(point) {
+	_transformProjectedPoint: function(point) {
 		// mgd : this is slow
 		var topLeftPoint = this._getTopLeftPoint();
 		var halfSize = this.getSize().divideBy(2.0);
 		var centerPoint = topLeftPoint.add( halfSize );
+		return this._transform.transform( point.subtract(centerPoint) ).add(centerPoint);
+	},
+
+	_transformLayerPoint: function(point) {
+		// mgd : this is slow
+		var centerPoint = this.getSize().divideBy(2.0);
 		return this._transform.transform( point.subtract(centerPoint) ).add(centerPoint);
 	},
 
@@ -333,10 +339,10 @@ L.Map = L.Evented.extend({
 		var centerPoint = topLeftPoint.add( halfSize );
 		// compute and tranform the 4 corners
 		var bounds = [
-			this._transformPoint( centerPoint.add( new L.Point(-halfSize.x, -halfSize.y) ) ),
-			this._transformPoint( centerPoint.add( new L.Point( halfSize.x, -halfSize.y) ) ),
-			this._transformPoint( centerPoint.add( new L.Point( halfSize.x,  halfSize.y) ) ),
-			this._transformPoint( centerPoint.add( new L.Point(-halfSize.x,  halfSize.y) ) )
+			this._transformProjectedPoint( centerPoint.add( new L.Point(-halfSize.x, -halfSize.y) ) ),
+			this._transformProjectedPoint( centerPoint.add( new L.Point( halfSize.x, -halfSize.y) ) ),
+			this._transformProjectedPoint( centerPoint.add( new L.Point( halfSize.x,  halfSize.y) ) ),
+			this._transformProjectedPoint( centerPoint.add( new L.Point(-halfSize.x,  halfSize.y) ) )
 		];
 		return new L.Bounds( bounds );
 	},
@@ -394,7 +400,8 @@ L.Map = L.Evented.extend({
 
 	latLngToLayerPoint: function (latlng) { // (LatLng)
 		var projectedPoint = this.project(L.latLng(latlng))._round();
-		return projectedPoint._subtract(this.getPixelOrigin());
+		var layerPoint = projectedPoint._subtract(this.getPixelOrigin());
+		return this._transformLayerPoint(layerPoint);
 	},
 
 	wrapLatLng: function (latlng) {

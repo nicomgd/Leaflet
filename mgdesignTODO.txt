@@ -8,7 +8,15 @@ L.Map.getPixelBounds ; voir si nécessaire de changer
 * la transformation doit probablement se faire dans cet espace
 * applique le _transform autour du centre de la map (en pixels)
 
+L.GrisLayer._initContainer
+* applique une transformation CSS (celle de la map)
+* centrée sur le milieu de la map
+
 === TODO
+
+appliquer le _tranform de la map aux positions de pictos
+gérer le zoom animé
+L.Map.getPixelBounds ; appliquer le tranform inverse
 
 L.Bounds ; ajouter une méthode pour obtenir les 4 coins
 L.Map.getPixelOrigin ; voir si à transformer, attention aux récursions infinies, utilisé par '_getTopLeftPoint'
