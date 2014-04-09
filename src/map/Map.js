@@ -40,6 +40,8 @@ L.Map = L.Evented.extend({
 		this._handlers = [];
 		this._layers = {};
 		this._zoomBoundLayers = {};
+        
+		this._transform = L.Matrix23([1,0,0], [0,1,0], [1,0,0], [0,1,0]);
 
 		this.callInitHooks();
 

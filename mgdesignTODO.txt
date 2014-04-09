@@ -1,0 +1,7 @@
+L.Bounds ; ajouter un constructeur à 4 points (min max fait dans la fonction) => OK, prend déjà un tableau
+L.Bounds ; ajouter une méthode pour obtenir les 4 coins
+L.Transformation ; ajouter des coefs pour avoir une vraie matrice
+L.Map.getPixelBounds ; voir si nécessaire de changer
+L.Map.getBounds ; transformer les quatre coins du pixel bounds puis calculer un nouveau bounds
+
+pour prototyper ; où mettre la matrice de transformation initiale ?
