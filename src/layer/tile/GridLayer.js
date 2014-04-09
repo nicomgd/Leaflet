@@ -177,8 +177,11 @@ L.GridLayer = L.Layer.extend({
 			this._tileContainer = this._container;
 		}
 		// mgd : TODO this kills/is_killed_by animated zoom ?
-		console.log(this._map);
-		L.DomUtil.setTransformMatrix( this._tileContainer, this._map._transform );
+		var mapTransform = this._map._transform;
+		var mapSize = this._map.getSize();
+		var halfSize = mapSize.divideBy(2.0);
+		var transformAroundCenter = L.Matrix23.translation(halfSize.x, halfSize.y).multiplyBy(mapTransform).multiplyBy(L.Matrix23.translation(-halfSize.x, -halfSize.y));
+		L.DomUtil.setTransformMatrix( this._tileContainer, transformAroundCenter);
 
 		if (this.options.opacity < 1) {
 			this._updateOpacity();
