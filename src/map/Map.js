@@ -41,7 +41,9 @@ L.Map = L.Evented.extend({
 		this._layers = {};
 		this._zoomBoundLayers = {};
         
-		this._transform = L.Matrix23([1,0,0], [0,1,0], [1,0,0], [0,1,0]);
+		//this._transform = new L.Matrix23([1,0,0], [0,1,0], [1,0,0], [0,1,0]);
+		this._transform = new L.Matrix23([0.5,0,0], [0,0.5,0], [2.0,0,0], [0,2.0,0]);
+		//this._transform = new L.Matrix23([1,1,0], [-1,1,0], [-1,1,0], [1,1.0,0]);
 
 		this.callInitHooks();
 
@@ -316,10 +318,27 @@ L.Map = L.Evented.extend({
 		}
 		return this._size.clone();
 	},
+	
+	_transformPoint: function(point) {
+		// mgd : this is slow
+		var topLeftPoint = this._getTopLeftPoint();
+		var halfSize = this.getSize().divideBy(2.0);
+		var centerPoint = topLeftPoint.add( halfSize );
+		return this._transform.transform( point.subtract(centerPoint) ).add(centerPoint);
+	},
 
 	getPixelBounds: function () {
 		var topLeftPoint = this._getTopLeftPoint();
-		return new L.Bounds(topLeftPoint, topLeftPoint.add(this.getSize()));
+		var halfSize = this.getSize().divideBy(2.0);
+		var centerPoint = topLeftPoint.add( halfSize );
+		// compute and tranform the 4 corners
+		var bounds = [
+			this._transformPoint( centerPoint.add( new L.Point(-halfSize.x, -halfSize.y) ) ),
+			this._transformPoint( centerPoint.add( new L.Point( halfSize.x, -halfSize.y) ) ),
+			this._transformPoint( centerPoint.add( new L.Point( halfSize.x,  halfSize.y) ) ),
+			this._transformPoint( centerPoint.add( new L.Point(-halfSize.x,  halfSize.y) ) )
+		];
+		return new L.Bounds( bounds );
 	},
 
 	getPixelOrigin: function () {

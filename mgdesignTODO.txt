@@ -1,7 +1,25 @@
-L.Bounds ; ajouter un constructeur à 4 points (min max fait dans la fonction) => OK, prend déjà un tableau
-L.Bounds ; ajouter une méthode pour obtenir les 4 coins
-L.Transformation ; ajouter des coefs pour avoir une vraie matrice
+=== Done
+
+L.Matrix23
+L.Map ; ajouté un _transform
+
 L.Map.getPixelBounds ; voir si nécessaire de changer
-L.Map.getBounds ; transformer les quatre coins du pixel bounds puis calculer un nouveau bounds
+* représente apparemment les bounds en pixel dans l'espace de tuiles global
+* la transformation doit probablement se faire dans cet espace
+* applique le _transform autour du centre de la map (en pixels)
+
+=== TODO
+
+L.Bounds ; ajouter une méthode pour obtenir les 4 coins
+L.Map.getPixelOrigin ; voir si à transformer, attention aux récursions infinies, utilisé par '_getTopLeftPoint'
+
+=== Ecarté
+
+L.Bounds ; ajouter un constructeur à 4 points (min max fait dans la fonction) => OK, prend déjà un tableau
+L.Transformation ; ajouter des coefs pour avoir une vraie matrice
+* trop de regressions possibles ; plutot nouvelle classe Matrix23
+L.Map.getBounds ; transformer les quatre coins du pixel bounds puis calculer un nouveau bounds ; non plutot dans getPixelBounds
 
 pour prototyper ; où mettre la matrice de transformation initiale ?
+* si non spécifié :: L.CRS.EPSG3857
+* bof non pas dans le CRS..
