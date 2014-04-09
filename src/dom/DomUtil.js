@@ -136,6 +136,11 @@ L.DomUtil = {
 		el.style[L.DomUtil.TRANSFORM] =
 			'translate3d(' + pos.x + 'px,' + pos.y + 'px' + ',0)' + (scale ? ' scale(' + scale + ')' : '');
 	},
+		
+	setTransformMatrix: function (el, m23) {
+		el.style[L.DomUtil.TRANSFORM] =
+			'matrix(' + m23._r0[0] + ',' + m23._r1[0] + ',' + m23._r0[1] + ',' + m23._r1[1] + ',' + m23._r0[2] + ',' + m23._r1[2] + ')';
+	},
 
 	setPosition: function (el, point, no3d) { // (HTMLElement, Point[, Boolean])
 

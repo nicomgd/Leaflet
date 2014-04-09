@@ -176,6 +176,9 @@ L.GridLayer = L.Layer.extend({
 		} else {
 			this._tileContainer = this._container;
 		}
+		// mgd : TODO this kills/is_killed_by animated zoom ?
+		console.log(this._map);
+		L.DomUtil.setTransformMatrix( this._tileContainer, this._map._transform );
 
 		if (this.options.opacity < 1) {
 			this._updateOpacity();
