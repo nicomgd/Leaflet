@@ -44,6 +44,15 @@ L.Map = L.Evented.extend({
 		//this._transform = new L.Matrix23([1,0,0], [0,1,0], [1,0,0], [0,1,0]);
 		this._transform = new L.Matrix23([0.5,0,0], [0,0.5,0], [2.0,0,0], [0,2.0,0]);
 		//this._transform = new L.Matrix23([1,1,0], [-1,1,0], [-1,1,0], [1,1.0,0]);
+/*
+		// 45°
+		var sqrt2_2 = Math.sqrt(2.0) / 2.0;
+		this._transform = new L.Matrix23([sqrt2_2,sqrt2_2,0], [-sqrt2_2,sqrt2_2,0], [-sqrt2_2,sqrt2_2,0], [sqrt2_2,sqrt2_2,0]);
+*/
+/*
+		// 90°
+		this._transform = new L.Matrix23([0,1,0], [-1,0,0], [0,1,0], [-1,0,0]);
+*/
 
 		this.callInitHooks();
 
@@ -324,13 +333,19 @@ L.Map = L.Evented.extend({
 		var topLeftPoint = this._getTopLeftPoint();
 		var halfSize = this.getSize().divideBy(2.0);
 		var centerPoint = topLeftPoint.add( halfSize );
-		return this._transform.transform( point.subtract(centerPoint) ).add(centerPoint);
+		return this._transform.untransform( point.subtract(centerPoint) ).add(centerPoint);
 	},
 
 	_transformLayerPoint: function(point) {
 		// mgd : this is slow
 		var centerPoint = this.getSize().divideBy(2.0);
 		return this._transform.transform( point.subtract(centerPoint) ).add(centerPoint);
+	},
+	
+	_untransformLayerPoint: function(point) {
+		// mgd : this is slow
+		var centerPoint = this.getSize().divideBy(2.0);
+		return this._transform.untransform( point.subtract(centerPoint) ).add(centerPoint);
 	},
 
 	getPixelBounds: function () {
@@ -394,6 +409,7 @@ L.Map = L.Evented.extend({
 	},
 
 	layerPointToLatLng: function (point) { // (Point)
+		var layerPoint = this._untransformLayerPoint(point);
 		var projectedPoint = L.point(point).add(this.getPixelOrigin());
 		return this.unproject(projectedPoint);
 	},
