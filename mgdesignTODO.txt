@@ -8,7 +8,7 @@ L.Map.getPixelBounds ; voir si nécessaire de changer
 * la transformation doit probablement se faire dans cet espace
 * applique le _transform inverse autour du centre de la map (en pixels)
 
-L.GrisLayer._initContainer
+L.GridLayer._initContainer
 * applique une transformation CSS (celle de la map)
 * centrée sur le milieu de la map
 
@@ -18,6 +18,10 @@ appliquer le _tranform de la map aux positions de pictos
 === TODO
 
 bug sélection tuiles à charger et zoom avec rotation à 90° ; même avec un scale à 0.5 quand on panne un peu..
+* Map._getTopLeftPoint utilise Map.getPixelOrigin & Map._getMapPanePos (delta dû au drag)
+* le delta du drag devrait prendre en compte la transformation
+* => supprimer _getTopLeftPoint
+* ne peut pas supprimer getPixelOrigin (qui ne fait que retourner _initialTopLeftPoint)
 gérer le zoom animé
 L.Bounds ; ajouter une méthode pour obtenir les 4 coins
 L.Map.getPixelOrigin ; voir si à transformer, attention aux récursions infinies, utilisé par '_getTopLeftPoint'

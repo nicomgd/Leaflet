@@ -42,7 +42,7 @@ L.Map = L.Evented.extend({
 		this._zoomBoundLayers = {};
         
 		//this._transform = new L.Matrix23([1,0,0], [0,1,0], [1,0,0], [0,1,0]);
-		this._transform = new L.Matrix23([0.5,0,0], [0,0.5,0], [2.0,0,0], [0,2.0,0]);
+		this._transform = new L.Matrix23([0.25,0,0], [0,0.5,0], [4.0,0,0], [0,2.0,0]);
 		//this._transform = new L.Matrix23([1,1,0], [-1,1,0], [-1,1,0], [1,1.0,0]);
 /*
 		// 45°
@@ -328,11 +328,12 @@ L.Map = L.Evented.extend({
 		return this._size.clone();
 	},
 	
+	_getCenterPoint: function() {
+		return this._getPixelCenter().subtract(this._getMapPanePos());
+	},
+	
 	_transformProjectedPoint: function(point) {
-		// mgd : this is slow
-		var topLeftPoint = this._getTopLeftPoint();
-		var halfSize = this.getSize().divideBy(2.0);
-		var centerPoint = topLeftPoint.add( halfSize );
+		var centerPoint = this._getCenterPoint();
 		return this._transform.untransform( point.subtract(centerPoint) ).add(centerPoint);
 	},
 
@@ -349,9 +350,8 @@ L.Map = L.Evented.extend({
 	},
 
 	getPixelBounds: function () {
-		var topLeftPoint = this._getTopLeftPoint();
-		var halfSize = this.getSize().divideBy(2.0);
-		var centerPoint = topLeftPoint.add( halfSize );
+		var halfSize = this.getSize().divideBy(2.0);			// containerSize, pixels
+		var centerPoint = this._getCenterPoint();
 		// compute and tranform the 4 corners
 		var bounds = [
 			this._transformProjectedPoint( centerPoint.add( new L.Point(-halfSize.x, -halfSize.y) ) ),
@@ -360,6 +360,11 @@ L.Map = L.Evented.extend({
 			this._transformProjectedPoint( centerPoint.add( new L.Point(-halfSize.x,  halfSize.y) ) )
 		];
 		return new L.Bounds( bounds );
+	},
+	
+	_getPixelCenter: function() {
+		this._checkIfLoaded();
+		return this._initialCenterPoint;
 	},
 
 	getPixelOrigin: function () {
@@ -533,11 +538,13 @@ L.Map = L.Evented.extend({
 		this._initialCenter = center;
 
 		this._initialTopLeftPoint = this._getNewTopLeftPoint(center);
+		this._initialCenterPoint = this._getNewCenterPoint(center);
 
 		if (!preserveMapOffset) {
 			L.DomUtil.setPosition(this._mapPane, new L.Point(0, 0));
 		} else {
 			this._initialTopLeftPoint._add(this._getMapPanePos());
+			this._initialCenterPoint._add(this._getMapPanePos());
 		}
 
 		var loading = !this._loaded;
@@ -668,6 +675,11 @@ L.Map = L.Evented.extend({
 		return this.getPixelOrigin().subtract(this._getMapPanePos());
 	},
 
+	_getNewCenterPoint: function(center, zoom) {
+		// TODO round on display, not calculation to increase precision?
+		return this.project(center, zoom)._round();
+	},
+	
 	_getNewTopLeftPoint: function (center, zoom) {
 		var viewHalf = this.getSize()._divideBy(2);
 		// TODO round on display, not calculation to increase precision?
