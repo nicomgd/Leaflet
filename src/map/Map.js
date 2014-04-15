@@ -42,16 +42,15 @@ L.Map = L.Evented.extend({
 		this._zoomBoundLayers = {};
         
 		//this._transform = new L.Matrix23([1,0,0], [0,1,0], [1,0,0], [0,1,0]);
-		this._transform = new L.Matrix23([0.25,0,0], [0,0.5,0], [4.0,0,0], [0,2.0,0]);
+		//this._transform = new L.Matrix23([0.25,0,0], [0,0.5,0], [4.0,0,0], [0,2.0,0]);
 		//this._transform = new L.Matrix23([1,1,0], [-1,1,0], [-1,1,0], [1,1.0,0]);
-/*
+
 		// 45°
 		var sqrt2_2 = Math.sqrt(2.0) / 2.0;
-		this._transform = new L.Matrix23([sqrt2_2,sqrt2_2,0], [-sqrt2_2,sqrt2_2,0], [-sqrt2_2,sqrt2_2,0], [sqrt2_2,sqrt2_2,0]);
-*/
+		this._transform = new L.Matrix23([sqrt2_2,sqrt2_2,0], [-sqrt2_2,sqrt2_2,0], [sqrt2_2,-sqrt2_2,0], [sqrt2_2,sqrt2_2,0]);
 /*
 		// 90°
-		this._transform = new L.Matrix23([0,1,0], [-1,0,0], [0,1,0], [-1,0,0]);
+		this._transform = new L.Matrix23([0,1,0], [-1,0,0], [0,-1,0], [1,0,0]);
 */
 
 		this.callInitHooks();
@@ -333,7 +332,7 @@ L.Map = L.Evented.extend({
 	},
 	
 	_transformPoint: function(point) {
-		var centerPoint = this._getCenterPoint();
+		var centerPoint = this._getPixelCenter();
 		return this._transform.untransform(point).add(centerPoint);
 	},
 
@@ -351,13 +350,18 @@ L.Map = L.Evented.extend({
 
 	getPixelBounds: function () {
 		var halfSize = this.getSize().divideBy(2.0);			// containerSize, pixels
+		var mapOffset = this._getMapPanePos();					// drag offset, pixels
+		//console.log(mapOffset.x, mapOffset.y);
 		// compute and tranform the 4 corners
 		var bounds = [
-			this._transformPoint( new L.Point(-halfSize.x, -halfSize.y) ),
-			this._transformPoint( new L.Point( halfSize.x, -halfSize.y) ),
-			this._transformPoint( new L.Point( halfSize.x,  halfSize.y) ),
-			this._transformPoint( new L.Point(-halfSize.x,  halfSize.y) )
+			this._transformPoint( new L.Point(-halfSize.x, -halfSize.y).subtract(mapOffset) ),
+			this._transformPoint( new L.Point( halfSize.x, -halfSize.y).subtract(mapOffset) ),
+			this._transformPoint( new L.Point( halfSize.x,  halfSize.y).subtract(mapOffset) ),
+			this._transformPoint( new L.Point(-halfSize.x,  halfSize.y).subtract(mapOffset) )
 		];
+		//console.log(bounds[0].x, bounds[0].y);
+		var test = this._transformPoint( new L.Point(-mapOffset.x, -mapOffset.y) );
+		console.log(test.x, test.y);
 		return new L.Bounds( bounds );
 	},
 	

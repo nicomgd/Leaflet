@@ -15,13 +15,18 @@ L.GridLayer._initContainer
 appliquer le _tranform de la map aux positions de pictos
 * Map.latLngToLayerPoint
 
+* ajout Map._initialCenterPoint & Map._getPixelCenter
+
 === TODO
 
-bug sélection tuiles à charger et zoom avec rotation à 90° ; même avec un scale à 0.5 quand on panne un peu..
+bug sélection tuiles à charger et zoom avec rotation à 45/90°
 * Map._getTopLeftPoint utilise Map.getPixelOrigin & Map._getMapPanePos (delta dû au drag)
 * le delta du drag devrait prendre en compte la transformation
 * => supprimer _getTopLeftPoint
 * ne peut pas supprimer getPixelOrigin (qui ne fait que retourner _initialTopLeftPoint)
+* on dirait qu'il reste un problème d'inversion des directions quand rotations ; les tuiles se chargent à l'opposé en x/y par rapport au drag...
+* ok c'était les matrices qui étaient fausses
+
 gérer le zoom animé
 L.Bounds ; ajouter une méthode pour obtenir les 4 coins
 L.Map.getPixelOrigin ; voir si à transformer, attention aux récursions infinies, utilisé par '_getTopLeftPoint'
