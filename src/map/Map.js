@@ -332,9 +332,9 @@ L.Map = L.Evented.extend({
 		return this._getPixelCenter().subtract(this._getMapPanePos());
 	},
 	
-	_transformProjectedPoint: function(point) {
+	_transformPoint: function(point) {
 		var centerPoint = this._getCenterPoint();
-		return this._transform.untransform( point.subtract(centerPoint) ).add(centerPoint);
+		return this._transform.untransform(point).add(centerPoint);
 	},
 
 	_transformLayerPoint: function(point) {
@@ -351,13 +351,12 @@ L.Map = L.Evented.extend({
 
 	getPixelBounds: function () {
 		var halfSize = this.getSize().divideBy(2.0);			// containerSize, pixels
-		var centerPoint = this._getCenterPoint();
 		// compute and tranform the 4 corners
 		var bounds = [
-			this._transformProjectedPoint( centerPoint.add( new L.Point(-halfSize.x, -halfSize.y) ) ),
-			this._transformProjectedPoint( centerPoint.add( new L.Point( halfSize.x, -halfSize.y) ) ),
-			this._transformProjectedPoint( centerPoint.add( new L.Point( halfSize.x,  halfSize.y) ) ),
-			this._transformProjectedPoint( centerPoint.add( new L.Point(-halfSize.x,  halfSize.y) ) )
+			this._transformPoint( new L.Point(-halfSize.x, -halfSize.y) ),
+			this._transformPoint( new L.Point( halfSize.x, -halfSize.y) ),
+			this._transformPoint( new L.Point( halfSize.x,  halfSize.y) ),
+			this._transformPoint( new L.Point(-halfSize.x,  halfSize.y) )
 		];
 		return new L.Bounds( bounds );
 	},
@@ -544,7 +543,7 @@ L.Map = L.Evented.extend({
 			L.DomUtil.setPosition(this._mapPane, new L.Point(0, 0));
 		} else {
 			this._initialTopLeftPoint._add(this._getMapPanePos());
-			this._initialCenterPoint._add(this._getMapPanePos());
+			// mgd: TODO this._initialCenterPoint
 		}
 
 		var loading = !this._loaded;
