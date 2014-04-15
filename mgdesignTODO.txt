@@ -1,3 +1,8 @@
+=== Coordinate systems
+
+Container => Layer            => Projected/Pixel     => LatLng
+(pixels)     (pixels, panned)    (pixels, tiles)     (crs)
+
 === Done
 
 L.Matrix23
@@ -16,16 +21,16 @@ appliquer le _tranform de la map aux positions de pictos
 * Map.latLngToLayerPoint
 
 * ajout Map._initialCenterPoint & Map._getPixelCenter
+** pour appliquer la tranformation au drag
 
 === TODO
 
-bug sélection tuiles à charger et zoom avec rotation à 45/90°
-* Map._getTopLeftPoint utilise Map.getPixelOrigin & Map._getMapPanePos (delta dû au drag)
-* le delta du drag devrait prendre en compte la transformation
-* => supprimer _getTopLeftPoint
-* ne peut pas supprimer getPixelOrigin (qui ne fait que retourner _initialTopLeftPoint)
-* on dirait qu'il reste un problème d'inversion des directions quand rotations ; les tuiles se chargent à l'opposé en x/y par rapport au drag...
-* ok c'était les matrices qui étaient fausses
+bug zoom out/in modifie le centre courant de la map (après drag)
+* Map._resetView ? plutot non
+* Map.setView ?
+* Map.getCenter ?
+* Map.layerPointToLatLng ? ou __Map.containerPointToLayerPoint__ ?
+** en fait probablement toutes les fonctions appelant _getMapPanePos
 
 gérer le zoom animé
 L.Bounds ; ajouter une méthode pour obtenir les 4 coins

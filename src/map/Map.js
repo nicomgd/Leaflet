@@ -327,10 +327,6 @@ L.Map = L.Evented.extend({
 		return this._size.clone();
 	},
 	
-	_getCenterPoint: function() {
-		return this._getPixelCenter().subtract(this._getMapPanePos());
-	},
-	
 	_transformPoint: function(point) {
 		var centerPoint = this._getPixelCenter();
 		return this._transform.untransform(point).add(centerPoint);
@@ -351,7 +347,6 @@ L.Map = L.Evented.extend({
 	getPixelBounds: function () {
 		var halfSize = this.getSize().divideBy(2.0);			// containerSize, pixels
 		var mapOffset = this._getMapPanePos();					// drag offset, pixels
-		//console.log(mapOffset.x, mapOffset.y);
 		// compute and tranform the 4 corners
 		var bounds = [
 			this._transformPoint( new L.Point(-halfSize.x, -halfSize.y).subtract(mapOffset) ),
@@ -359,9 +354,6 @@ L.Map = L.Evented.extend({
 			this._transformPoint( new L.Point( halfSize.x,  halfSize.y).subtract(mapOffset) ),
 			this._transformPoint( new L.Point(-halfSize.x,  halfSize.y).subtract(mapOffset) )
 		];
-		//console.log(bounds[0].x, bounds[0].y);
-		var test = this._transformPoint( new L.Point(-mapOffset.x, -mapOffset.y) );
-		console.log(test.x, test.y);
 		return new L.Bounds( bounds );
 	},
 	
