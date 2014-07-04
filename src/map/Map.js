@@ -429,7 +429,7 @@ L.Map = L.Evented.extend({
 	},
 
 	containerPointToLayerPoint: function (point) { // (Point)
-		return this._transformLayerPoint( L.point(point).subtract(this._getMapPanePos()) );
+		return this._untransformLayerPoint( L.point(point).subtract(this._getMapPanePos()) );
 	},
 
 	layerPointToContainerPoint: function (point) { // (Point)
