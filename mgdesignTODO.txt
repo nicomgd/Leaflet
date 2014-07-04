@@ -23,14 +23,15 @@ appliquer le _tranform de la map aux positions de pictos
 * ajout Map._initialCenterPoint & Map._getPixelCenter
 ** pour appliquer la tranformation au drag
 
-=== TODO
-
-bug zoom out/in modifie le centre courant de la map (après drag)
+[x] bug zoom out/in modifie le centre courant de la map (après drag)
 * Map._resetView ? plutot non
 * Map.setView ?
 * Map.getCenter ?
 * Map.layerPointToLatLng ? ou __Map.containerPointToLayerPoint__ ?
 ** en fait probablement toutes les fonctions appelant _getMapPanePos
+=> __Map.containerPointToLayerPoint__ utilise en fait 'untransform'
+
+=== TODO
 
 gérer le zoom animé
 L.Bounds ; ajouter une méthode pour obtenir les 4 coins
