@@ -6,16 +6,16 @@ Container => Layer            => Projected/Pixel     => LatLng
 === Done
 
 L.Matrix23
-L.Map ; ajouté un _transform
+L.Map ; ajoutï¿½ un _transform
 
-L.Map.getPixelBounds ; voir si nécessaire de changer
-* représente apparemment les bounds en pixel dans l'espace de tuiles global
+L.Map.getPixelBounds ; voir si nï¿½cessaire de changer
+* reprï¿½sente apparemment les bounds en pixel dans l'espace de tuiles global
 * la transformation doit probablement se faire dans cet espace
 * applique le _transform inverse autour du centre de la map (en pixels)
 
 L.GridLayer._initContainer
 * applique une transformation CSS (celle de la map)
-* centrée sur le milieu de la map
+* centrï¿½e sur le milieu de la map
 
 appliquer le _tranform de la map aux positions de pictos
 * Map.latLngToLayerPoint
@@ -23,7 +23,7 @@ appliquer le _tranform de la map aux positions de pictos
 * ajout Map._initialCenterPoint & Map._getPixelCenter
 ** pour appliquer la tranformation au drag
 
-[x] bug zoom out/in modifie le centre courant de la map (après drag)
+[x] bug zoom out/in modifie le centre courant de la map (aprï¿½s drag)
 * Map._resetView ? plutot non
 * Map.setView ?
 * Map.getCenter ?
@@ -33,17 +33,23 @@ appliquer le _tranform de la map aux positions de pictos
 
 === TODO
 
-gérer le zoom animé
-L.Bounds ; ajouter une méthode pour obtenir les 4 coins
-L.Map.getPixelOrigin ; voir si à transformer, attention aux récursions infinies, utilisé par '_getTopLeftPoint'
+gï¿½rer le zoom animï¿½
+* L.DomUtil.setTransform Ã©crase la matrices
+* GridLayer._animateZoom modifiÃ©, permet de ne pas perdre la matrice ; reste problÃ¨me pdt la transition
+* leaflet ajoute une classe css 'leaflet-zoom-anim' pendant l'animation (transition css sur 'transform')
+[x] bug pendant l'animation sur la position des pictos... voir Map._latLngToNewLayerPoint , utilisÃ© par Marker._animateZoom
+[ ] bug si drag de la carte et zoom ensuite
 
-=== Ecarté
+L.Bounds ; ajouter une mï¿½thode pour obtenir les 4 coins
+L.Map.getPixelOrigin ; voir si ï¿½ transformer, attention aux rï¿½cursions infinies, utilisï¿½ par '_getTopLeftPoint'
 
-L.Bounds ; ajouter un constructeur à 4 points (min max fait dans la fonction) => OK, prend déjà un tableau
+=== Ecartï¿½
+
+L.Bounds ; ajouter un constructeur ï¿½ 4 points (min max fait dans la fonction) => OK, prend dï¿½jï¿½ un tableau
 L.Transformation ; ajouter des coefs pour avoir une vraie matrice
 * trop de regressions possibles ; plutot nouvelle classe Matrix23
 L.Map.getBounds ; transformer les quatre coins du pixel bounds puis calculer un nouveau bounds ; non plutot dans getPixelBounds
 
-pour prototyper ; où mettre la matrice de transformation initiale ?
-* si non spécifié :: L.CRS.EPSG3857
+pour prototyper ; oï¿½ mettre la matrice de transformation initiale ?
+* si non spï¿½cifiï¿½ :: L.CRS.EPSG3857
 * bof non pas dans le CRS..

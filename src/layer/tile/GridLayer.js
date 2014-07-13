@@ -177,6 +177,7 @@ L.GridLayer = L.Layer.extend({
 			this._tileContainer = this._container;
 		}
 		// mgd : TODO this kills/is_killed_by animated zoom ?
+		// mgd : stop copied in GridLayer._animateZoom && _prepareBgBuffer
 		var mapTransform = this._map._transform;
 		var mapSize = this._map.getSize();
 		var halfSize = mapSize.divideBy(2.0);
@@ -487,6 +488,16 @@ L.GridLayer = L.Layer.extend({
 		this._scale = this._prevScale * e.scale;
 
 		L.DomUtil.setTransform(this._bgBuffer, this._translate, this._scale);
+
+		var mapTransform = this._map._transform;
+		var mapSize = this._map.getSize();
+		var halfSize = mapSize.divideBy(2.0);
+		var transformAroundCenter = L.Matrix23.translation(halfSize.x, halfSize.y).multiplyBy(mapTransform).multiplyBy(L.Matrix23.translation(-halfSize.x, -halfSize.y));
+		var transTranslate = e.origin.multiplyBy(1 - e.scale);
+		// mgd : this does not work as soon as we drag the view
+		transformAroundCenter = transformAroundCenter.multiplyBy(L.Matrix23.translation(transTranslate.x, transTranslate.y));
+		transformAroundCenter = transformAroundCenter.multiplyBy(L.Matrix23.scale(e.scale));
+		L.DomUtil.setTransformMatrix(this._bgBuffer, transformAroundCenter);
 	},
 
 	_endZoomAnim: function () {
@@ -502,6 +513,12 @@ L.GridLayer = L.Layer.extend({
 		if (map && !map._animatingZoom && !map.touchZoom._zooming && bg) {
 			bg.innerHTML = '';
 			L.DomUtil.setTransform(bg);
+			
+			var mapTransform = this._map._transform;
+			var mapSize = this._map.getSize();
+			var halfSize = mapSize.divideBy(2.0);
+			var transformAroundCenter = L.Matrix23.translation(halfSize.x, halfSize.y).multiplyBy(mapTransform).multiplyBy(L.Matrix23.translation(-halfSize.x, -halfSize.y));
+			L.DomUtil.setTransformMatrix(bg, transformAroundCenter);
 		}
 	},
 
@@ -524,6 +541,12 @@ L.GridLayer = L.Layer.extend({
 		// prepare the buffer to become the front tile pane
 		bg.style.visibility = 'hidden';
 		L.DomUtil.setTransform(bg);
+
+		var mapTransform = this._map._transform;
+		var mapSize = this._map.getSize();
+		var halfSize = mapSize.divideBy(2.0);
+		var transformAroundCenter = L.Matrix23.translation(halfSize.x, halfSize.y).multiplyBy(mapTransform).multiplyBy(L.Matrix23.translation(-halfSize.x, -halfSize.y));
+		L.DomUtil.setTransformMatrix(bg, transformAroundCenter);
 
 		// switch out the current layer to be the new bg layer (and vice-versa)
 		this._tileContainer = bg;

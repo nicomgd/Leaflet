@@ -23,8 +23,8 @@
 			osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 			osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
 
-		var center = [50.5, 30.51];
-		var map = L.map('map', {zoomAnimation: false})
+		var center = [45.0, 0.0];
+		var map = L.map('map', {zoomAnimation: true})
 				.setView(center, 15)
 				.addLayer(osm);
 
@@ -32,7 +32,7 @@
 
 		function populate() {
 			for (var i = 0; i < 10; i++) {
-				L.marker([center[0]+0.001*i, center[1]+0.002*i]).addTo(markers);
+				L.marker([center[0]+0.001*i, center[1]+0.001*i]).addTo(markers);
 			}
 			return false;
 		}
@@ -42,16 +42,22 @@
 		populate();
 		L.DomUtil.get('populate').onclick = populate;
 
-		function logEvent(e) { console.log(e.type); }
+		function logEvent(e) {
+			//console.log(/*e.type, */map.getCenter());
+			//console.log(e);
+			console.log(map.getCenter());
+			//console.log(map._getCenterLayerPoint());
+			//console.log(map._getMapPanePos());
+		}
 
 		// map.on('click', logEvent);
 
-		// map.on('movestart', logEvent);
-		// map.on('move', logEvent);
-		// map.on('moveend', logEvent);
+		map.on('movestart', logEvent);
+		map.on('move', logEvent);
+		map.on('moveend', logEvent);
 
-		// map.on('zoomstart', logEvent);
-		// map.on('zoomend', logEvent);
+		map.on('zoomstart', logEvent);
+		map.on('zoomend', logEvent);
 
 	</script>
 </body>

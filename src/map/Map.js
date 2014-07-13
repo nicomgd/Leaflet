@@ -43,16 +43,16 @@ L.Map = L.Evented.extend({
         
 		//this._transform = new L.Matrix23([1,0,0], [0,1,0], [1,0,0], [0,1,0]);
 		//this._transform = new L.Matrix23([0.25,0,0], [0,0.5,0], [4.0,0,0], [0,2.0,0]);
-		//this._transform = new L.Matrix23([1,1,0], [-1,1,0], [-1,1,0], [1,1.0,0]);
-
+		this._transform = new L.Matrix23([1,1,0], [-1,1,0], [0.5,-0.5,0], [0.5,0.5,0]);
+/*
 		// 45°
 		var sqrt2_2 = Math.sqrt(2.0) / 2.0;
 		this._transform = new L.Matrix23([sqrt2_2,sqrt2_2,0], [-sqrt2_2,sqrt2_2,0], [sqrt2_2,-sqrt2_2,0], [sqrt2_2,sqrt2_2,0]);
+*/
 /*
 		// 90°
 		this._transform = new L.Matrix23([0,1,0], [-1,0,0], [0,-1,0], [1,0,0]);
 */
-
 		this.callInitHooks();
 
 		this._addLayers(this.options.layers);
@@ -683,7 +683,8 @@ L.Map = L.Evented.extend({
 
 	_latLngToNewLayerPoint: function (latlng, newZoom, newCenter) {
 		var topLeft = this._getNewTopLeftPoint(newCenter, newZoom).add(this._getMapPanePos());
-		return this.project(latlng, newZoom)._subtract(topLeft);
+		var layerPoint = this.project(latlng, newZoom)._subtract(topLeft);
+		return this._transformLayerPoint(layerPoint);
 	},
 
 	// layer point of the current center

@@ -47,6 +47,10 @@ L.Matrix23.translation = function(x, y) {
 	return new L.Matrix23( [1,0,x],[0,1,y], [1,0,-x],[0,1,-y] );
 }
 
+L.Matrix23.scale = function(x) {
+	return new L.Matrix23( [x,0,0],[0,x,0], [1.0/x,0,0],[0,1.0/x,0] );
+}
+
 
 L.Matrix23.prototype = {
 	transform: function (point, scale) { // (Point, Number) -> Point
