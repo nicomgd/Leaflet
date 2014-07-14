@@ -1,8 +1,3 @@
-=== Coordinate systems
-
-Container => Layer            => Projected/Pixel     => LatLng
-(pixels)     (pixels, panned)    (pixels, tiles)     (crs)
-
 === Done
 
 L.Matrix23
@@ -38,7 +33,8 @@ g�rer le zoom anim�
 * GridLayer._animateZoom modifié, permet de ne pas perdre la matrice ; reste problème pdt la transition
 * leaflet ajoute une classe css 'leaflet-zoom-anim' pendant l'animation (transition css sur 'transform')
 [x] bug pendant l'animation sur la position des pictos... voir Map._latLngToNewLayerPoint , utilisé par Marker._animateZoom
-[ ] bug si drag de la carte et zoom ensuite
+[x] bug si centre du zoom n'est pas le milieu de la carte
+[ ] bug si drag de la carte et zoom ensuite ; probablement lié au fait que le leaflet-map-pane garde sa valeur de translate3d dans ce cas
 
 L.Bounds ; ajouter une m�thode pour obtenir les 4 coins
 L.Map.getPixelOrigin ; voir si � transformer, attention aux r�cursions infinies, utilis� par '_getTopLeftPoint'
@@ -53,3 +49,28 @@ L.Map.getBounds ; transformer les quatre coins du pixel bounds puis calculer un 
 pour prototyper ; o� mettre la matrice de transformation initiale ?
 * si non sp�cifi� :: L.CRS.EPSG3857
 * bof non pas dans le CRS..
+
+=== FONCTIONNEMENT LEAFLET
+
+=== Coordinate systems
+
+Container => Layer            => Projected/Pixel     => LatLng
+(pixels)     (pixels, panned)    (pixels, tiles)     (crs)
+
+=== Drag
+
+* style css 'translate' appliqué au leaflet-map-pane (top level element)
+
+== zoom animé
+
+* deux layers :
+** le courant
+** le futur, après l'animation, caché par défaut
+
+* l'animation css affecte le layer courant
+** animation position/scale css pour le conteneur de tuiles
+** animation position css pour les marqueurs, calcul de la position destination en js
+
+* le chargement des tuiles est demandé pour le layer futur
+** une fois les tuiles du layer futur chargées, celui-ci est affiché et devient le courant
+** l'ancien courant est vidé

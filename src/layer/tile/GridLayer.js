@@ -492,12 +492,15 @@ L.GridLayer = L.Layer.extend({
 		var mapTransform = this._map._transform;
 		var mapSize = this._map.getSize();
 		var halfSize = mapSize.divideBy(2.0);
-		var transformAroundCenter = L.Matrix23.translation(halfSize.x, halfSize.y).multiplyBy(mapTransform).multiplyBy(L.Matrix23.translation(-halfSize.x, -halfSize.y));
-		var transTranslate = e.origin.multiplyBy(1 - e.scale);
 		// mgd : this does not work as soon as we drag the view
-		transformAroundCenter = transformAroundCenter.multiplyBy(L.Matrix23.translation(transTranslate.x, transTranslate.y));
-		transformAroundCenter = transformAroundCenter.multiplyBy(L.Matrix23.scale(e.scale));
-		L.DomUtil.setTransformMatrix(this._bgBuffer, transformAroundCenter);
+		var transformAroundCenter = L.Matrix23.translation(halfSize.x, halfSize.y)
+			.multiplyBy(mapTransform)
+			.multiplyBy(L.Matrix23.translation(-halfSize.x, -halfSize.y))
+			;
+		var transform = /*transformAroundCenter.multiplyBy*/(L.Matrix23.translation(this._translate.x, this._translate.y));
+		transform = transform.multiplyBy(L.Matrix23.scale(this._scale));
+		transform = transform.multiplyBy(transformAroundCenter);
+		L.DomUtil.setTransformMatrix(this._bgBuffer, transform);
 	},
 
 	_endZoomAnim: function () {
