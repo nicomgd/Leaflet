@@ -684,7 +684,9 @@ L.Map = L.Evented.extend({
 	},
 
 	_latLngToNewLayerPoint: function (latlng, newZoom, newCenter) {
-		var topLeft = this._getNewTopLeftPoint(newCenter, newZoom).add(this._getMapPanePos());
+		var mapPanePos = this._getMapPanePos();
+		mapPanePos = this._transform.untransform(mapPanePos);
+		var topLeft = this._getNewTopLeftPoint(newCenter, newZoom).add(mapPanePos);
 		var layerPoint = this.project(latlng, newZoom)._subtract(topLeft);
 		return this._transformLayerPoint(layerPoint);
 	},

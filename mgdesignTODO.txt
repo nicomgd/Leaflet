@@ -34,7 +34,11 @@ g�rer le zoom anim�
 * leaflet ajoute une classe css 'leaflet-zoom-anim' pendant l'animation (transition css sur 'transform')
 [x] bug pendant l'animation sur la position des pictos... voir Map._latLngToNewLayerPoint , utilisé par Marker._animateZoom
 [x] bug si centre du zoom n'est pas le milieu de la carte
-[ ] bug si drag de la carte et zoom ensuite ; probablement lié au fait que le leaflet-map-pane garde sa valeur de translate3d dans ce cas
+[x] bug si drag de la carte et zoom ensuite ; probablement lié au fait que le leaflet-map-pane garde sa valeur de translate3d dans ce cas
+    * par _onZoomTransitionEnd, qui appelle Map._resetView avec 'preserveMapOffset'
+[ ] bug pendant la transition css de zoom si getMapPanePos() != 0
+    * corrigé pour les marqueurs
+    * reste les tuiles...
 
 L.Bounds ; ajouter une m�thode pour obtenir les 4 coins
 L.Map.getPixelOrigin ; voir si � transformer, attention aux r�cursions infinies, utilis� par '_getTopLeftPoint'
