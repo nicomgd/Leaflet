@@ -538,8 +538,10 @@ L.Map = L.Evented.extend({
 		if (!preserveMapOffset) {
 			L.DomUtil.setPosition(this._mapPane, new L.Point(0, 0));
 		} else {
-			this._initialTopLeftPoint._add(this._getMapPanePos());
-			// mgd: TODO this._initialCenterPoint
+			var mapPanePos = this._getMapPanePos();
+			mapPanePos = this._transform.untransform(mapPanePos);
+			this._initialTopLeftPoint._add(mapPanePos);
+			this._initialCenterPoint._add(mapPanePos);
 		}
 
 		var loading = !this._loaded;
