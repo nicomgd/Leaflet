@@ -46,7 +46,8 @@ L.Map.include(!L.DomUtil.TRANSITION ? {} : {
 
 		// offset is the pixel coords of the zoom origin relative to the current center
 		var scale = this.getZoomScale(zoom),
-		    offset = this._getCenterOffset(center)._divideBy(1 - 1 / scale),
+		    currentOffset = this._getCenterOffset(center),
+			offset = currentOffset._divideBy(1 - 1 / scale),
 			origin = this._getCenterLayerPoint()._add(offset);
 
 		// don't animate if the zoom origin isn't within one screen from the current center, unless forced

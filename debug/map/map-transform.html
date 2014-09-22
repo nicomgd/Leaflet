@@ -25,7 +25,7 @@
 			osm = L.tileLayer(osmUrl, {maxZoom: 18, attribution: osmAttrib});
 
 		var center = [45.0, 0.0];
-		var map = L.map('map', {zoomAnimation: false})
+		var map = L.map('map', {zoomAnimation: true})
 				.setView(center, 15)
 				.addLayer(osm);
 
@@ -46,9 +46,11 @@
 		function logEvent(e) {
 			//console.log(/*e.type, */map.getCenter());
 			//console.log(e);
-			console.log(map.getCenter());
-			//console.log(map._getCenterLayerPoint());
+			console.log("getCenter", map.getCenter());
+			console.log("_getCenterLayerPoint", map._getCenterLayerPoint());
 			//console.log(map._getMapPanePos());
+			console.log("latLngToLayerPoint", map.latLngToLayerPoint(map.getCenter()));
+			console.log("_getCenterOffset", map._getCenterOffset(map.getCenter()));
 		}
 
 		// map.on('click', logEvent);
@@ -59,6 +61,12 @@
 
 		map.on('zoomstart', logEvent);
 		map.on('zoomend', logEvent);
+		
+		map.on('mousemove', function(e) {
+			console.log("* container point", e.containerPoint);
+			console.log("* layer point", e.layerPoint);
+			console.log("* latlng", e.latlng);
+		});
 
 	</script>
 </body>

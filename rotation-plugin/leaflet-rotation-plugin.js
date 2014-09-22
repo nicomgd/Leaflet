@@ -1,7 +1,15 @@
+/*
+
+STATUS ::
+* bug when getMapPanePos != (0,0)
+* in this case, the invariant `map.latLngToLayerPoint(map.getCenter()) == map._getCenterLayerPoint()` breaks
+
+*/
+
 L.Map = L.Map.extend({
 	
 	__super__: L.Map,
-	_mapAngle: 45.0,
+	_mapAngle: 90.0,
 	_initialCenterPoint: null,
 	
 	// new functions
@@ -94,6 +102,9 @@ L.Map = L.Map.extend({
 	},
 	
 	getPixelBounds: function () {
+	
+		// rewritten to account for rotation (conservative)
+		
 		var halfSize = this.getSize().divideBy(2.0);			// containerSize, pixels
 		var mapOffset = this._getMapPanePos();					// drag offset, pixels
 		// compute and tranform the 4 corners
@@ -117,7 +128,8 @@ L.Map = L.Map.extend({
  	latLngToLayerPoint: function (latlng) { // (LatLng)
  		var projectedPoint = this.project(L.latLng(latlng))._round();
 		var layerPoint = projectedPoint._subtract(this.getPixelOrigin());
-		return this._transformLayerPoint(layerPoint);
+		var result = this._transformLayerPoint(layerPoint);
+		return result;
  	},
 
 	containerPointToLayerPoint: function (point) { // (Point)
@@ -125,7 +137,7 @@ L.Map = L.Map.extend({
 	},
 
 	layerPointToContainerPoint: function (point) { // (Point)
-		return L.point(point).add(this._getMapPanePos());		// TODO
+		throw 'not implemented';
 	},
 	
 	//
@@ -152,6 +164,23 @@ L.TileLayer = L.TileLayer.extend({
 	
 	_createTile: function () {
 		return this.__super__.prototype._createTile.call(this);
+	},
+
+	_animateZoom: function (e) {
+		if (!this._animating) {
+			this._animating = true;
+			this._prepareBgBuffer();
+		}
+
+		var bg = this._bgBuffer,
+		    transform = L.DomUtil.TRANSFORM,
+		    initialTransform = e.delta ? L.DomUtil.getTranslateString(e.delta) : bg.style[transform],
+		    scaleStr = L.DomUtil.getScaleString(e.scale, e.origin);
+
+		console.log("zoom origin", e.origin);
+		bg.style[transform] = e.backwards ?
+				scaleStr + ' ' + initialTransform :
+				initialTransform + ' ' + scaleStr;
 	},
 
 });
